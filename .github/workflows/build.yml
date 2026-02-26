@@ -1,0 +1,62 @@
+name: Build Leatex v3.2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Publish Portable (self-contained)
+      run: dotnet publish LeatexApp_v3_2.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+
+    - name: Upload Portable
+      uses: actions/upload-artifact@v4
+      with:
+        name: LeatexApp_v3.2_Portable
+        path: |
+          **/bin/Release/net6.0-windows/win-x64/publish/**
+        retention-days: 14
+
+  installer:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Portable Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: LeatexApp_v3.2_Portable
+        path: publish
+
+    - name: Setup Inno Setup
+      run: |
+        choco install innosetup --yes
+
+    - name: Compile Installer
+      run: |
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" LeatexApp_v3_2_Installer.iss
+
+    - name: Upload Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: LeatexApp_v3.2_Setup
+        path: |
+          **/*.exe
+        retention-days: 14
