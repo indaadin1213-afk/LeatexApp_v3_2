@@ -1,0 +1,18 @@
+
+# LeatexApp v3.1 (WinForms .NET 6)
+
+**Šta je novo:**
+- Deklaracija = samo štampa (bez ulaza), sa **unosom broja deklaracija** i **auto-serijskim (čisti brojevi)** od **100** naviše
+- Svaka deklaracija sadrži **2 QR koda** (naziv + serijski)
+- 4 deklaracije po A4; broj stranica = ceil(N/4)
+- Sve deklaracije idu u **pending_deklaracije.json**
+- Novi tab **ULAZ**: ručni unos ŠIFRA + SERIJSKI, **automatska provjera** i **lista zadnjih 10 ULaza**
+- Light tema + moderni zaobljeni dugmići + splash + logo
+
+## Build u EXE
+1. Visual Studio 2022/2025 Community (workload: .NET Desktop Development)
+2. Otvori `LeatexApp_v3_1.csproj`
+3. VS preuzima NuGet: QuestPDF, ClosedXML, Svg, QRCoder
+4. Build → Build Solution
+5. EXE: `bin/Debug/net6.0-windows/LeatexApp_v3_1.exe`
+

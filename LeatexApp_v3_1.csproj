@@ -1,0 +1,38 @@
+
+using System.IO;
+using System.Text.Json;
+
+namespace LeatexApp.Services
+{
+    public class AppSettings
+    {
+        public string KompanijaNaziv { get; set; } = "Leatex d.o.o. Lukavac";
+        public string Telefon1 { get; set; } = "+ (387) 35-547-363";
+        public string Telefon2 { get; set; } = "+ (387) 61-515-156";
+        public string Email { get; set; } = "info@leatex.ba";
+        public string? LogoPath { get; set; }
+        public double LogoHeightPx { get; set; } = 36;
+        // Globalni brojač serijskih (čisti brojevi)
+        public int NextSerial { get; set; } = 100; // Adin traži početni = 100
+    }
+
+    public static class SettingsService
+    {
+        private static string SettingsPath => Path.Combine(StorageService.DataDir, "settings.json");
+
+        public static AppSettings Load()
+        {
+            if (!File.Exists(SettingsPath))
+                Save(new AppSettings());
+            var json = File.ReadAllText(SettingsPath);
+            return JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
+        }
+
+        public static void Save(AppSettings s)
+        {
+            var json = JsonSerializer.Serialize(s, new JsonSerializerOptions{WriteIndented=true});
+            Directory.CreateDirectory(StorageService.DataDir);
+            File.WriteAllText(SettingsPath, json);
+        }
+    }
+}
